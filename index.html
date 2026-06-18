@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Travel Agent · MCP</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand">
+    <span class="topbar-dot"></span>
+    <span class="topbar-title">AI TRAVEL AGENT</span>
+    <span class="topbar-sub">protocol: MCP</span>
+  </div>
+  <div class="topbar-status" id="connectionStatus">
+    <span class="status-pulse"></span>
+    <span id="connectionStatusText">подключение...</span>
+  </div>
+</header>
+
+<main class="layout">
+
+  <section class="panel panel-chat">
+    <div class="panel-header">
+      <h2>Диалог</h2>
+      <button id="resetBtn" class="reset-btn" title="Начать новый диалог">Новый чат</button>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="message message-agent">
+        <div class="message-bubble">
+          Привет! Я помогу найти авиабилеты и отели для вашей поездки.
+          Например: «Найди билет из Berlin в Rome на следующую пятницу»
+          или «Подбери поездку в Barcelona на 3 дня».
+        </div>
+      </div>
+    </div>
+
+    <form class="chat-input-row" id="chatForm">
+      <input
+        type="text"
+        id="chatInput"
+        placeholder="Например: найди недорогой отель в Праге на выходные"
+        autocomplete="off"
+      />
+      <button type="submit" id="sendBtn">Отправить</button>
+    </form>
+  </section>
+
+  <section class="panel panel-logs">
+    <div class="panel-header">
+      <h2>MCP / LLM логи</h2>
+      <span class="log-count" id="logCount">0</span>
+    </div>
+
+    <div class="logs-stream" id="logsStream">
+      <div class="log-placeholder">Ожидание событий от MCP-серверов и LLM...</div>
+    </div>
+  </section>
+
+</main>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

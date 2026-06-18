@@ -1,0 +1,396 @@
+/* ===================================================
+   AI TRAVEL AGENT — Design system
+   Палитра: тёплый почти-белый слева (чат) + почти-чёрный
+   справа (консоль логов). Акцент — электрический синий #3B82F6.
+   Шрифты: Space Grotesk (UI) + JetBrains Mono (консоль).
+   Сигнатура: анимированная лента логов как трекер рейсов.
+=================================================== */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --chat-bg:      #F7F6F3;
+  --chat-surface: #FFFFFF;
+  --chat-border:  #E5E2DB;
+  --chat-text:    #1A1916;
+  --chat-sub:     #7A776F;
+
+  --console-bg:      #0E0F12;
+  --console-surface: #161820;
+  --console-border:  #252730;
+  --console-text:    #C9CEDE;
+  --console-dim:     #5A5E72;
+
+  --accent:       #3B82F6;
+  --accent-glow:  rgba(59,130,246,0.18);
+  --green:        #22C55E;
+  --amber:        #F59E0B;
+  --red:          #EF4444;
+  --purple:       #A855F7;
+
+  --topbar-h:     52px;
+  --radius:       12px;
+  --radius-sm:    6px;
+  --font-ui:      'Space Grotesk', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-ui);
+  background: var(--console-bg);
+  color: var(--chat-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── TOPBAR ───────────────────────────────────────── */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--topbar-h);
+  background: var(--console-bg);
+  border-bottom: 1px solid var(--console-border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  z-index: 100;
+}
+
+.topbar-brand {
+  display: flex; align-items: center; gap: 10px;
+}
+
+.topbar-dot {
+  width: 9px; height: 9px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent);
+  flex-shrink: 0;
+}
+
+.topbar-title {
+  font-family: var(--font-mono);
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.12em;
+  color: #FFFFFF;
+}
+
+.topbar-sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--console-dim);
+  letter-spacing: 0.05em;
+}
+
+.topbar-status {
+  display: flex; align-items: center; gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--console-dim);
+}
+
+.status-pulse {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--console-dim);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.status-pulse.connected {
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
+}
+
+/* ── LAYOUT ───────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 60fr 40fr;
+  height: calc(100vh - var(--topbar-h));
+  margin-top: var(--topbar-h);
+}
+
+.panel {
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── CHAT PANEL ───────────────────────────────────── */
+.panel-chat {
+  background: var(--chat-bg);
+  border-right: 1px solid var(--console-border);
+}
+
+.panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--chat-border);
+  background: var(--chat-surface);
+  flex-shrink: 0;
+}
+
+.panel-chat .panel-header {
+  border-bottom-color: var(--chat-border);
+}
+
+.panel-header h2 {
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--chat-sub);
+  text-transform: uppercase;
+}
+
+.panel-logs .panel-header {
+  background: var(--console-surface);
+  border-bottom: 1px solid var(--console-border);
+}
+
+.panel-logs .panel-header h2 {
+  color: var(--console-dim);
+  font-family: var(--font-mono);
+}
+
+.reset-btn {
+  font-family: var(--font-ui);
+  font-size: 12px; font-weight: 500;
+  padding: 5px 12px;
+  border: 1px solid var(--chat-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--chat-sub);
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.reset-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ── MESSAGES ─────────────────────────────────────── */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scroll-behavior: smooth;
+}
+
+.message {
+  display: flex;
+  max-width: 82%;
+}
+
+.message-user { align-self: flex-end; }
+.message-agent { align-self: flex-start; }
+
+.message-bubble {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  font-size: 14.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.message-user .message-bubble {
+  background: var(--accent);
+  color: #fff;
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.message-agent .message-bubble {
+  background: var(--chat-surface);
+  color: var(--chat-text);
+  border: 1px solid var(--chat-border);
+  border-bottom-left-radius: var(--radius-sm);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* Typing indicator */
+.message-typing .message-bubble {
+  display: flex; align-items: center; gap: 5px;
+  padding: 14px 18px;
+}
+.typing-dot {
+  width: 7px; height: 7px;
+  background: var(--chat-sub);
+  border-radius: 50%;
+  animation: typing-bounce 1.1s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.18s; }
+.typing-dot:nth-child(3) { animation-delay: 0.36s; }
+@keyframes typing-bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40%           { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ── CHAT INPUT ───────────────────────────────────── */
+.chat-input-row {
+  display: flex; gap: 10px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--chat-border);
+  background: var(--chat-surface);
+  flex-shrink: 0;
+}
+
+.chat-input-row input {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--chat-border);
+  border-radius: var(--radius-sm);
+  background: var(--chat-bg);
+  color: var(--chat-text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.chat-input-row input:focus {
+  border-color: var(--accent);
+}
+.chat-input-row input::placeholder {
+  color: var(--chat-sub);
+  opacity: 0.7;
+}
+
+.chat-input-row button {
+  font-family: var(--font-ui);
+  font-size: 14px; font-weight: 600;
+  padding: 10px 20px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+.chat-input-row button:hover  { opacity: 0.88; }
+.chat-input-row button:active { transform: scale(0.97); }
+.chat-input-row button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── LOGS PANEL ───────────────────────────────────── */
+.panel-logs {
+  background: var(--console-bg);
+}
+
+.log-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 2px 8px;
+  background: var(--console-border);
+  color: var(--console-dim);
+  border-radius: 20px;
+}
+
+.logs-stream {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  scroll-behavior: smooth;
+}
+
+.log-placeholder {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--console-dim);
+  padding: 20px;
+  text-align: center;
+}
+
+/* ── LOG ENTRY ────────────────────────────────────── */
+.log-entry {
+  padding: 8px 16px;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.log-entry:hover {
+  background: var(--console-surface);
+}
+
+.log-entry-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.log-ts {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--console-dim);
+  flex-shrink: 0;
+}
+
+.log-server {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 1px 6px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.log-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--console-text);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Payload (разворачивается по клику) */
+.log-payload {
+  display: none;
+  margin-top: 6px;
+  padding: 8px 10px;
+  background: #0A0B0E;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #8B93B0;
+  white-space: pre;
+  overflow-x: auto;
+  max-height: 240px;
+  overflow-y: auto;
+  line-height: 1.5;
+}
+.log-entry.expanded .log-payload { display: block; }
+
+/* Цвета по direction + server */
+.log-entry.direction-outgoing { border-left-color: var(--accent); }
+.log-entry.direction-incoming { border-left-color: var(--green); }
+.log-entry.direction-error    { border-left-color: var(--red); background: rgba(239,68,68,0.04); }
+.log-entry.direction-status   { border-left-color: var(--console-border); }
+
+.log-server-kiwi    { background: rgba(59,130,246,0.15); color: #60A5FA; }
+.log-server-trivago { background: rgba(168,85,247,0.15); color: #C084FC; }
+.log-server-llm     { background: rgba(245,158,11,0.15); color: #FCD34D; }
+.log-server-agent   { background: rgba(34,197,94,0.15);  color: #86EFAC; }
+
+/* Scrollbars */
+.chat-messages::-webkit-scrollbar,
+.logs-stream::-webkit-scrollbar,
+.log-payload::-webkit-scrollbar { width: 5px; }
+.chat-messages::-webkit-scrollbar-track  { background: transparent; }
+.logs-stream::-webkit-scrollbar-track    { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb  { background: var(--chat-border); border-radius: 4px; }
+.logs-stream::-webkit-scrollbar-thumb    { background: var(--console-border); border-radius: 4px; }
+.log-payload::-webkit-scrollbar-thumb    { background: #2A2D3A; border-radius: 4px; }
+
+/* ── MOBILE FALLBACK (< 700px) ───────────────────── */
+@media (max-width: 700px) {
+  .layout { grid-template-columns: 1fr; grid-template-rows: 60vh 40vh; }
+  .panel-chat { border-right: none; border-bottom: 1px solid var(--console-border); }
+}
