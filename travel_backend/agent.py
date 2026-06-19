@@ -8,11 +8,11 @@ suggestions, потом accommodation-search).
 import json
 from datetime import datetime
 
-from backend.llm_client import OpenRouterClient
-from backend.mcp_clients.kiwi_client import KiwiClient
-from backend.mcp_clients.trivago_client import TrivagoClient
-from backend.date_utils import parse_relative_date, next_weekend, next_weekday, to_kiwi_format, to_iso_date
-from backend.logger_bus import log_bus
+from travel_backend.llm_client import OpenRouterClient
+from travel_backend.mcp_clients.kiwi_client import KiwiClient
+from travel_backend.mcp_clients.trivago_client import TrivagoClient
+from travel_backend.date_utils import parse_relative_date, next_weekend, next_weekday, to_kiwi_format, to_iso_date
+from travel_backend.logger_bus import log_bus
 
 
 SYSTEM_PROMPT = """Ты — профессиональный AI-агент для планирования путешествий. Твоя задача — помогать пользователю находить авиабилеты и отели, используя предоставленные тебе инструменты (tools).

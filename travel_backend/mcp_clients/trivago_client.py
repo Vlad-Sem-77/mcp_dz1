@@ -10,7 +10,7 @@
        -> получаем список отелей.
 """
 
-from backend.mcp_clients.base_mcp_client import BaseMCPClient, MCPError
+from travel_backend.mcp_clients.base_mcp_client import BaseMCPClient, MCPError
 
 TRIVAGO_MCP_ENDPOINT = "https://mcp.trivago.com/mcp"
 

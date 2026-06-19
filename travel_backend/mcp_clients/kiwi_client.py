@@ -10,7 +10,7 @@
 из/в РФ (это контролируется на уровне system prompt и agent.py).
 """
 
-from backend.mcp_clients.base_mcp_client import BaseMCPClient, MCPError
+from travel_backend.mcp_clients.base_mcp_client import BaseMCPClient, MCPError
 
 KIWI_MCP_ENDPOINT = "https://mcp.kiwi.com"
 

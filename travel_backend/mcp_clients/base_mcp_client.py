@@ -16,7 +16,7 @@ import uuid
 import httpx
 from typing import Any, Optional
 
-from backend.logger_bus import log_bus
+from travel_backend.logger_bus import log_bus
 
 
 class MCPError(Exception):

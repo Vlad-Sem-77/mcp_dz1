@@ -15,9 +15,9 @@ import threading
 from flask import Flask, request, jsonify, render_template, session
 from flask_sock import Sock
 
-from backend import config
-from backend.agent import TravelAgent
-from backend.logger_bus import log_bus
+from travel_backend import config
+from travel_backend.agent import TravelAgent
+from travel_backend.logger_bus import log_bus
 
 app = Flask(
     __name__,

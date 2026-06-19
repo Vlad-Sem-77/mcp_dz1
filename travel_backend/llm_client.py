@@ -7,8 +7,8 @@
 import json
 import httpx
 
-from backend import config
-from backend.logger_bus import log_bus
+from travel_backend import config
+from travel_backend.logger_bus import log_bus
 
 
 class OpenRouterClient:

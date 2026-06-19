@@ -11,3 +11,7 @@ PORT = "5000"
 [deployment]
 run = ["sh", "-c", "pip install -r requirements.txt && python app.py"]
 deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
