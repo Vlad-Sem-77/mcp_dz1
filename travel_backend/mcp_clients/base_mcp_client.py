@@ -53,6 +53,14 @@ class BaseMCPClient:
             headers["mcp-session-id"] = self.session_id
         return headers
 
+    def _notification_headers(self) -> dict:
+        """Notification requests sometimes need explicit Accept for servers that enforce it."""
+        return {
+            "Content-Type": "application/json",
+            "Accept": "application/json, text/event-stream",
+            "mcp-session-id": self.session_id or "",
+        }
+
     def _parse_response(self, response: httpx.Response) -> dict:
         """
         Streamable HTTP может вернуть либо чистый JSON, либо
@@ -200,10 +208,14 @@ class BaseMCPClient:
             )
 
         # Уведомляем сервер, что клиент готов (часть handshake протокола MCP)
+        # Некоторые серверы (Kiwi) возвращают 406/415 на пустые notification — это нормально
         try:
-            self._send_rpc("notifications/initialized", {}, is_notification=True)
-        except MCPError:
-            # Некоторые серверы не требуют этого шага строго — не фатально
+            self._client.post(
+                self.endpoint,
+                headers=self._notification_headers(),
+                json={"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}},
+            )
+        except Exception:
             pass
 
         return result
