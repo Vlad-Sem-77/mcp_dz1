@@ -10,6 +10,7 @@
 | LLM | OpenRouter API (google/gemini-2.0-flash-exp или другая с tool calling) |
 | Билеты | [Kiwi.com MCP](https://mcp.kiwi.com) — Streamable HTTP, без авторизации |
 | Отели | [Trivago MCP](https://mcp.trivago.com/mcp) — Streamable HTTP, без авторизации |
+| Геокодирование | Nominatim (OpenStreetMap) — бесплатно, без ключа |
 | Frontend | HTML · CSS · Vanilla JS · WebSocket |
 
 ## Как работает
@@ -18,8 +19,7 @@
 Пользователь → Flask (POST /api/chat) → TravelAgent
   → OpenRouter LLM (tool calling)
       → search_flights  → KiwiClient   → MCP initialize → tools/call search-flight
-      → search_hotels   → TrivagoClient → MCP initialize → trivago-search-suggestions
-                                                         → trivago-accommodation-search
+      → search_hotels   → TrivagoClient → MCP initialize → trivago-accommodation-search
   → Ответ на русском пользователю
   
 Параллельно: LogBus → WebSocket (/ws/logs) → правая панель UI (real-time)
@@ -72,7 +72,7 @@ ai-travel-agent/
 ├── requirements.txt
 ├── .env.example                 # шаблон переменных окружения
 ├── .gitignore
-├── backend/
+├── travel_backend/
 │   ├── config.py                # загрузка .env
 │   ├── llm_client.py            # клиент OpenRouter
 │   ├── agent.py                 # агент: system prompt + tool calling loop
@@ -81,7 +81,7 @@ ai-travel-agent/
 │   └── mcp_clients/
 │       ├── base_mcp_client.py   # базовый MCP JSON-RPC клиент
 │       ├── kiwi_client.py       # Kiwi.com (search-flight)
-│       └── trivago_client.py    # Trivago (suggestions + accommodation-search)
+│       └── trivago_client.py    # Trivago (accommodation-search, с Nominatim fallback)
 └── frontend/
     ├── templates/index.html
     └── static/
@@ -92,7 +92,7 @@ ai-travel-agent/
 ## Важные ограничения
 
 - **Kiwi.com не поддерживает аэропорты России** — агент знает об этом через system prompt.
-- Trivago MCP использует двухшаговый поиск (suggestions → accommodation) — реализован автоматически внутри `search_hotels`.
+- Trivago MCP использует `trivago-accommodation-search` напрямую по `query` (название города) — с Nominatim fallback для координат.
 - Для Kiwi даты передаются в формате `dd/mm/yyyy`, для Trivago — `YYYY-MM-DD`.
 
 ## Примеры запросов

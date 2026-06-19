@@ -191,11 +191,11 @@ html, body {
   border-radius: var(--radius);
   font-size: 14.5px;
   line-height: 1.6;
-  white-space: pre-wrap;
   word-break: break-word;
 }
 
 .message-user .message-bubble {
+  white-space: pre-wrap;
   background: var(--accent);
   color: #fff;
   border-bottom-right-radius: var(--radius-sm);
@@ -207,6 +207,37 @@ html, body {
   border: 1px solid var(--chat-border);
   border-bottom-left-radius: var(--radius-sm);
   box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.message-agent .message-bubble ul {
+  margin: 8px 0 8px 16px;
+  padding: 0;
+  list-style: disc;
+}
+
+.message-agent .message-bubble li {
+  margin: 4px 0;
+}
+
+.message-agent .message-bubble a {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.message-agent .message-bubble code {
+  background: var(--chat-bg);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.message-agent .message-bubble h1,
+.message-agent .message-bubble h2,
+.message-agent .message-bubble h3 {
+  font-weight: 600;
+  margin: 8px 0;
+  font-size: 15px;
 }
 
 /* Typing indicator */
